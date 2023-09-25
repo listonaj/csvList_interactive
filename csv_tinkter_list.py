@@ -14,9 +14,10 @@ def append_data(file_name):
                 street_name = simpledialog.askstring("Input", "Enter street name:")
                 city = simpledialog.askstring("Input", "Enter city:")
                 zip_code = simpledialog.askstring("Input", "Enter zip code:")
+                state = simpledialog.askstring("input", "Enter the state or country")
                 phone_number = simpledialog.askstring("Input", "Enter phone number")
 
-                data = f"{name},{age},{street_number},{street_name},{city},{zip_code},{phone_number}\n"
+                data = f"{name},{age},{street_number},{street_name},{city},{state},{zip_code},{phone_number}\n"
                 file_writer.write(data)
                 file_writer.flush()
 
@@ -35,7 +36,7 @@ def create_new_list():
     
     try:
         with open(file_name, 'w') as file_writer:
-            file_writer.write("name,age,streetNumber,streetName,city,zipCode,phoneNumber\n")
+            file_writer.write("name,age,streetNumber,streetName,city,state,zipCode,phoneNumber\n")
             messagebox.showinfo("Info", "New list created in " + file_name)
             
         response = messagebox.askyesno("Fill List", "Do you want to fill the new list now?")
