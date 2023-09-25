@@ -1,83 +1,61 @@
 import tkinter as tk
-import csv
+from tkinter import messagebox, simpledialog
+import os
 
-def append_data():
-    name = name_entry.get()
-    age = age_entry.get()
-    street_number = street_number_entry.get()
-    street_name = street_name_entry.get()
-    city = city_entry.get()
-    zip_code = zip_code_entry.get()
-    phone_number = phone_number_entry.get()
+def append_data(file_name):
+    try:
+        continue_adding_data = True
 
-    with open('user_data.csv', mode='a', newline='') as file:
-        writer = csv.writer(file)
-        if file.tell() == 0:
-            writer.writerow(['name', 'age', 'street_number', 'street_name', 'city', 'zip_code', 'phone_number'])
-        writer.writerow([name, age, street_number, street_name, city, zip_code, phone_number])
+        with open(file_name, 'a') as file_writer:
+            while continue_adding_data:
+                name = simpledialog.askstring("Input", "Enter name:")
+                age = simpledialog.askinteger("Input", "Enter age:")
+                street_number = simpledialog.askstring("Input", "Enter street number:")
+                street_name = simpledialog.askstring("Input", "Enter street name:")
+                city = simpledialog.askstring("Input", "Enter city:")
+                zip_code = simpledialog.askstring("Input", "Enter zip code:")
+                phone_number = simpledialog.askstring("Input", "Enter phone number")
 
-    result_label.config(text="Data added to user_data.csv")
+                data = f"{name},{age},{street_number},{street_name},{city},{zip_code},{phone_number}\n"
+                file_writer.write(data)
+                file_writer.flush()
+
+                messagebox.showinfo("Info", "Data added to " + file_name)
+
+                response = messagebox.askyesno("Continue?", "Do you want to add more data?")
+                if not response:
+                    continue_adding_data = False
+
+    except Exception as e:
+        print(f"An error occurred while appending data: {str(e)}")
+        messagebox.showerror("Error", "An error occurred. Check the console for details.")
 
 def create_new_list():
-    with open('user_data.csv', mode='w', newline='') as file:
-        writer = csv.writer(file)
-        writer.writerow(['name', 'age', 'street_number', 'street_name', 'city', 'zip_code', 'phone_number'])
-    result_label.config(text="New list created in user_data.csv")
+    file_name = "user_data.csv"
+    
+    try:
+        with open(file_name, 'w') as file_writer:
+            file_writer.write("name,age,streetNumber,streetName,city,zipCode,phoneNumber\n")
+            messagebox.showinfo("Info", "New list created in " + file_name)
+            
+        response = messagebox.askyesno("Fill List", "Do you want to fill the new list now?")
+        if response:
+            append_data(file_name)
+    except Exception as e:
+        print(f"An error occurred while creating a new list: {str(e)}")
+        messagebox.showerror("Error", "An error occurred. Check the console for details.")
 
-def exit_program():
-    root.destroy()
+def main():
+    window = tk.Tk()
+    window.title("CSV Creator Menu")
+    
+    create_list_button = tk.Button(window, text="Create a New List", command=create_new_list)
+    append_data_button = tk.Button(window, text="Append Elements to Existing List", command=lambda: append_data("user_data.csv"))
+    
+    create_list_button.pack(pady=10)
+    append_data_button.pack(pady=10)
+    
+    window.mainloop()
 
-root = tk.Tk()
-root.title("CSV Creator")
-
-menu_label = tk.Label(root, text="Choose an option:")
-menu_label.pack()
-
-append_button = tk.Button(root, text="Append data to an existing list", command=append_data)
-append_button.pack()
-
-create_button = tk.Button(root, text="Create a new list", command=create_new_list)
-create_button.pack()
-
-exit_button = tk.Button(root, text="Exit", command=exit_program)
-exit_button.pack()
-
-name_label = tk.Label(root, text="Name:")
-name_label.pack()
-name_entry = tk.Entry(root)
-name_entry.pack()
-
-age_label = tk.Label(root, text="Age:")
-age_label.pack()
-age_entry = tk.Entry(root)
-age_entry.pack()
-
-street_number_label = tk.Label(root, text="Street Number:")
-street_number_label.pack()
-street_number_entry = tk.Entry(root)
-street_number_entry.pack()
-
-street_name_label = tk.Label(root, text="Street Name:")
-street_name_label.pack()
-street_name_entry = tk.Entry(root)
-street_name_entry.pack()
-
-city_label = tk.Label(root, text="City:")
-city_label.pack()
-city_entry = tk.Entry(root)
-city_entry.pack()
-
-zip_code_label = tk.Label(root, text="Zip Code:")
-zip_code_label.pack()
-zip_code_entry = tk.Entry(root)
-zip_code_entry.pack()
-
-phone_number_label = tk.Label(root, text="Phone Number:")
-phone_number_label.pack()
-phone_number_entry = tk.Entry(root)
-phone_number_entry.pack()
-
-result_label = tk.Label(root, text="")
-result_label.pack()
-
-root.mainloop()
+if __name__ == "__main__":
+    main()
